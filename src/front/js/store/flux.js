@@ -2,6 +2,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			message: null,
+			token: "",
 			demo: [
 				{
 					title: "FIRST",
@@ -20,6 +21,53 @@ const getState = ({ getStore, getActions, setStore }) => {
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
+			login: async (email, password) => {
+				const login = await fetch(process.env.BACKEND_URL + "/api/login", {
+					method: "POST", 
+					headers: {
+						"Content-Type": "Application/json"
+					},
+					body: JSON.stringify({
+						email: email,
+						password: password
+					})
+				})
+				const data = await login.json()
+				setStore({
+					"token": data.token
+				})
+				localStorage.setItem("token", data.token)
+				console.log(data)
+
+			},
+
+			signup: async (email, password) => {
+				const signup = await fetch(process.env.BACKEND_URL + "/api/signup", {
+					method: "POST", 
+					headers: {
+						"Content-Type": "Application/json"
+					},
+					body: JSON.stringify({
+						email: email,
+						password: password
+					})
+				})
+				const data = await signup.json()
+				console.log(data)
+
+			},
+
+			/*private: async () => {
+				const privatePage = await fetch(process.env.BACKEND_URL + "/api/private", {
+					method: "GET", 
+					headers: {
+						"Content-Type": "Application/json",
+						Authorization: `Bearer ${store.token}`
+					}
+				})
+				const data = await privatePage.json()
+				console.log(data)
+			},*/
 
 			getMessage: async () => {
 				try{
